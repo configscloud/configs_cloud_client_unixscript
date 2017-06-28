@@ -1,0 +1,45 @@
+# configs.cloud.lib
+#
+# @Auth : D Kuruppath, 2017/June
+#
+# This is a "simple library function" to invoke a Configs.Cloud API.
+# Feel free to improvise this script based on your requirements and functions
+# Refer configs cloud documentation for further information.
+#
+# === Further Info ====
+# You could parse the JSON content output using jq (https://stedolan.github.io/jq/) or 
+# Any other such tools, depending upon your preference.
+#
+getConfigValues()
+{
+	# Static Vars
+	url="https://app.configs.cloud/";
+	
+	# Inputs
+	x_auth_token=$1;
+	api_name=$2;
+	additional_params=$3;
+	
+	# Validate mandatory arguments
+	if [[ $# -eq 0 ]]
+	then
+		echo "ERROR: No arguments supplied";
+		return 1;
+	elif [[ -z $1 ]]; then
+		echo "ERROR: X-Auth-Token Not supplied. Authentication failed. Refer Configs.Cloud Documentation for supplying authentication";
+		return 1;
+	elif [[ -z $2 ]]; then
+		echo "ERROR: API Name not supplied. Nothing to call. Refer Configs.Cloud API Documentation for more information";
+		return 1;
+	fi
+	
+	# Build additional parameters
+	if [[ -z $3 ]]
+	then
+		api_name=$api_name?$additional_params
+	fi
+	
+	# Finally call the API
+	curl -k -H "X-Auth-Token:$x_auth_token" $url/$api_name;
+	echo
+}
